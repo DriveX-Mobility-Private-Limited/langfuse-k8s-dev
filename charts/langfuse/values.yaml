@@ -363,7 +363,7 @@ langfuse:
   # NextAuth configuration
   nextauth:
     # -- When deploying to production, set the `nextauth.url` value to the canonical URL of your site.
-    url: http://localhost:3000
+    url: https://llmmetrics.drivex.in  
     # -- Used to encrypt the NextAuth.js JWT, and to hash email verification tokens. Can be configured by value or existing secret reference.
     secret:
       secretKeyRef:
@@ -685,7 +685,6 @@ s3:
 #   LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID:
 #     valueFrom:
 #       secretKeyRef:
-#         name: langfuse-secrets-prod
 #         key: access-key-id
 #   LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY:
 #     valueFrom:
