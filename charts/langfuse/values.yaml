@@ -17,10 +17,9 @@ langfuse:
 
   # -- Used to hash API keys. Can be configured by value or existing secret reference. To generate a new salt, run `openssl rand -base64 32`.
   salt:
-    value: ""
     secretKeyRef:
-      name: ""
-      key: ""
+      name: "langfuse-secrets-prod"
+      key: "SALT"
   
   # -- Langfuse EE license key.
   licenseKey:
@@ -31,10 +30,9 @@ langfuse:
 
   # -- Used to encrypt sensitive data. Must be 256 bits (64 string characters in hex format). Generate via `openssl rand -hex 32`.
   encryptionKey:
-    value: ""
     secretKeyRef:
-      name: ""
-      key: ""
+      name: "langfuse-secrets-prod"
+      key: "ENCRYPTION_KEY"
 
   # Feature flags
   features:
@@ -84,18 +82,24 @@ langfuse:
   # -- Security context for all langfuse deployments
   securityContext: {}
   # -- Node selector for all langfuse deployments
-  nodeSelector: {}
-  # -- Tolerations for all langfuse deployments
-  tolerations: []
-  # -- Affinity for all langfuse deployments
+  
+  nodeSelector:
+    if-llm-workload: "true"
+  tolerations:
+    - key: "if-monitoring-pod"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+    - key: "if-llm-workload"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
   affinity: {}
   pod:
     # -- Annotations for all langfuse pods
     annotations: {}
     # -- Labels for all langfuse pods
     labels: {}
-    # -- Topology spread constraints for all langfuse pods
-    topologySpreadConstraints: []
   deployment:
     # -- Annotations for all langfuse deployments
     annotations: {}
@@ -104,7 +108,13 @@ langfuse:
   # -- Number of replicas to use for all langfuse deployments. Can be overridden by the individual deployments
   replicas: 1
   # -- Resources for all langfuse deployments. Can be overridden by the individual deployments
-  resources: {}
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
   image:
     # -- The image tag to use for all langfuse deployments. Can be overridden by the individual deployments. Falls back to appVersion if not set.
     tag: Null
@@ -145,8 +155,6 @@ langfuse:
       annotations: {}
       # -- Labels for the web pods
       labels: {}
-      # -- Topology spread constraints for the web pods. Overrides the global topologySpreadConstraints
-      topologySpreadConstraints: null
     service:
       # -- The type of service to use for the langfuse web application
       type: ClusterIP
@@ -189,11 +197,11 @@ langfuse:
     hpa:
       # -- Set to `true` to enable HPA for the langfuse web pods
       # Note: When both KEDA and HPA are enabled, the deployment will fail.
-      enabled: false
+      enabled: true
       # -- The minimum number of replicas to use for the langfuse web pods
       minReplicas: 1
       # -- The maximum number of replicas to use for the langfuse web pods
-      maxReplicas: 2
+      maxReplicas: 3
       # -- The target CPU utilization percentage for the langfuse web pods
       targetCPUUtilizationPercentage: 50
 
@@ -213,6 +221,7 @@ langfuse:
     
     # -- Adding records to /etc/hosts in the pod's network.
     hostAliases: []
+    
 
     livenessProbe:
       # -- Path to check for liveness.
@@ -241,7 +250,17 @@ langfuse:
       failureThreshold: 3
       # -- Success threshold for readinessProbe.
       successThreshold: 1
-  
+    nodeSelector:
+      if-llm-workload: "true"  
+    tolerations:
+    - key: "if-monitoring-pod"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+    - key: "if-llm-workload"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
   # Worker deployment configuration
   worker:
     image:
@@ -263,8 +282,6 @@ langfuse:
       annotations: {}
       # -- Labels for the worker pods
       labels: {}
-      # -- Topology spread constraints for the worker pods. Overrides the global topologySpreadConstraints
-      topologySpreadConstraints: null
 
     # -- Resources for the langfuse worker pods. Defaults to the global resources
     resources: {}
@@ -296,11 +313,11 @@ langfuse:
     hpa:
       # -- Set to `true` to enable HPA for the langfuse worker pods
       # Note: When both KEDA and HPA are enabled, the deployment will fail.
-      enabled: false
+      enabled: true
       # -- The minimum number of replicas to use for the langfuse worker pods
       minReplicas: 1
       # -- The maximum number of replicas to use for the langfuse worker pods
-      maxReplicas: 2
+      maxReplicas: 5
       # -- The target CPU utilization percentage for the langfuse worker pods
       targetCPUUtilizationPercentage: 50
 
@@ -329,27 +346,40 @@ langfuse:
       failureThreshold: 3
       # -- Success threshold for livenessProbe.
       successThreshold: 1
-
+    nodeSelector:
+      if-llm-workload: "true"  
+    tolerations:
+    - key: "if-monitoring-pod"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+    - key: "if-llm-workload"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
   # NextAuth configuration
   nextauth:
     # -- When deploying to production, set the `nextauth.url` value to the canonical URL of your site.
     url: http://localhost:3000
     # -- Used to encrypt the NextAuth.js JWT, and to hash email verification tokens. Can be configured by value or existing secret reference.
     secret:
-      value: ""
       secretKeyRef:
-        name: ""
-        key: ""
+        name: "langfuse-secrets-prod"
+        key: "NEXTAUTH_SECRET"
 
 # PostgreSQL Configuration
 postgresql:
   # -- Enable PostgreSQL deployment (via Bitnami Helm Chart). If you want to use an external Postgres server (or a managed one), set this to false
   deploy: true
-  
+  primary:
+    persistence:
+      enabled: true
+      size: 50Gi
+      selector: {}
   # -- PostgreSQL host to connect to. If postgresql.deploy is true, this will be set automatically based on the release name.
   host: ""
   # -- Port of the postgres server to use. Defaults to 5432.
-  port: null
+  port: 5432
   # -- Additional database connection arguments
   args: ""
 
@@ -362,16 +392,16 @@ postgresql:
   # Authentication configuration
   auth:
     # -- Username to use to connect to the postgres database deployed with Langfuse. In case `postgresql.deploy` is set to `true`, the user will be created automatically.
-    username: postgres
+    username: "postgres"
     # -- Password to use to connect to the postgres database deployed with Langfuse. In case `postgresql.deploy` is set to `true`, the password will be set automatically.
     password: ""
     # -- If you want to use an existing secret for the postgres password, set the name of the secret here. (`postgresql.auth.username` and `postgresql.auth.password` will be ignored and picked up from this secret).
-    existingSecret: ""
+    existingSecret: "langfuse-postgres-credentials-prod"
     # -- The key in the existing secret that contains the password.
     secretKeys:
-      userPasswordKey: password
+      postgresPasswordKey: "password"
     # -- Database name to use for Langfuse.
-    database: postgres_langfuse
+    database: langfuse_prod
     # -- Additional database connection arguments
     args: ""
   
@@ -413,9 +443,9 @@ redis:
     # -- Configure the password by value or existing secret reference
     password: ""
     # -- If you want to use an existing secret for the redis password, set the name of the secret here. (`redis.auth.password` will be ignored and picked up from this secret).
-    existingSecret: ""
+    existingSecret: "langfuse-secrets-prod"
     # -- The key in the existing secret that contains the password.
-    existingSecretPasswordKey: ""
+    existingSecretPasswordKey: "REDIS_PASSWORD"
 
     database: 0
 
@@ -430,7 +460,11 @@ redis:
 clickhouse:
   # -- Enable ClickHouse deployment (via Bitnami Helm Chart). If you want to use an external Clickhouse server (or a managed one), set this to false
   deploy: true
-  
+  persistence:
+    size: 50Gi
+  logPersistence:
+    enabled: true
+    size: 30Gi
   # -- ClickHouse host to connect to. If clickhouse.deploy is true, this will be set automatically based on the release name.
   host: ""
   # -- ClickHouse HTTP port to connect to.
@@ -445,9 +479,9 @@ clickhouse:
     # -- Password for the ClickHouse user.
     password: ""
     # -- If you want to use an existing secret for the ClickHouse password, set the name of the secret here. (`clickhouse.auth.username` and `clickhouse.auth.password` will be ignored and picked up from this secret).
-    existingSecret: ""
+    existingSecret: "langfuse-secrets-prod"
     # -- The key in the existing secret that contains the password.
-    existingSecretKey: ""
+    existingSecretKey: "CLICKHOUSE_PASSWORD"
   
   # Migration configuration
   migration:
@@ -467,12 +501,23 @@ clickhouse:
   replicaCount: 3
   # -- The resources preset to use for the ClickHouse cluster.
   resourcesPreset: 2xlarge
-
+  nodeSelector:
+    if-llm-workload: "true"
+  tolerations:
+    - key: "if-monitoring-pod"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+    - key: "if-llm-workload"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
 # S3/MinIO Configuration
 s3:
   # -- Enable MinIO deployment (via Bitnami Helm Chart). If you want to use a custom BlobStorage, e.g. S3, set to false.
   deploy: true
-
+  persistence:
+    size: 50Gi
   # -- S3 bucket to use for all uploads. Can be overridden per upload type.
   bucket: ""
   # -- S3 region to use for all uploads. Can be overridden per upload type.
@@ -483,16 +528,14 @@ s3:
   forcePathStyle: true
   # -- S3 accessKeyId to use for all uploads. Can be overridden per upload type.
   accessKeyId:
-    value: ""
     secretKeyRef:
-      name: ""
-      key: ""
+      name: "langfuse-secrets-prod"
+      key: "S3_ACCESS_KEY_ID"
   # -- S3 secretAccessKey to use for all uploads. Can be overridden per upload type.
   secretAccessKey:
-    value: ""
     secretKeyRef:
-      name: ""
-      key: ""
+      name: "langfuse-secrets-prod"
+      key: "S3_SECRET_ACCESS_KEY"
 
   # S3 Concurrency Configuration
   concurrency:
@@ -595,6 +638,19 @@ s3:
     existingSecret: ""
     # -- Key where the Minio root user password is being stored inside the existing secret `s3.auth.existingSecret`
     rootPasswordSecretKey: ""
-
+  nodeSelector:
+    if-llm-workload: "true"
+  tolerations:
+    - key: "if-monitoring-pod"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+    - key: "if-llm-workload"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"    
+# Langfuse Production Configuration
+global:
+  storageClass: "gp2"
 # Additional manifests
 extraManifests: []
