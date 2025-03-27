@@ -518,15 +518,31 @@ clickhouse:
 # S3/MinIO Configuration
 s3:
   # -- Enable MinIO deployment (via Bitnami Helm Chart). If you want to use a custom BlobStorage, e.g. S3, set to false.
-  deploy: true
+  deploy: false
   persistence:
     size: 50Gi
   # -- S3 bucket to use for all uploads. Can be overridden per upload type.
-  bucket: ""
+  bucket: "langfuse-production"
   # -- S3 region to use for all uploads. Can be overridden per upload type.
-  region: "auto"
+  region: "ap-south-2"
   # -- S3 endpoint to use for all uploads. Can be overridden per upload type.
-  endpoint: ""
+  endpoint: "https://s3.eu-west-1.amazonaws.com"
+  forcePathStyle: false
+  accessKeyId:
+    secretKeyRef:
+      name: "langfuse-s3-credentials"
+      key: "access-key-id"
+  secretAccessKey:
+    secretKeyRef:
+      name: "langfuse-s3-credentials"
+      key: "secret-access-key"
+  eventUpload:
+    prefix: "events/"
+  batchExport:
+    prefix: "exports/"
+  mediaUpload:
+    prefix: "media/"
+
   # -- Whether to force path style on requests. Required for MinIO. Can be overridden per upload type.
   forcePathStyle: true
   # -- S3 accessKeyId to use for all uploads. Can be overridden per upload type.
