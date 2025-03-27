@@ -63,13 +63,12 @@ langfuse:
     annotations:
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
-      cert-manager.io/cluster-issuer: letsencrypt-dev
+      cert-manager.io/cluster-issuer: letsencrypt-prod
       nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
     # -- The class name for the ingress resource
     className: "nginx"
     # -- The hosts for the ingress resource
     hosts:
-    Example:
     - host: "llmmetrics.drivex.in"
       paths:
         - path: /
