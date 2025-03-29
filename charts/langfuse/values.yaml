@@ -532,10 +532,10 @@ clickhouse:
         operator: "Equal"
         value: "true"
         effect: "NoSchedule"
-    - key: "if-monitoring-pod"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"        
+      - key: "if-monitoring-pod"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"        
     nodeSelector:
       if-llm-workload: "true"      
 # S3/MinIO Configuration
