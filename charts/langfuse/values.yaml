@@ -496,17 +496,7 @@ clickhouse:
     existingSecret: "langfuse-secrets-prod"
     # -- The key in the existing secret that contains the password.
     existingSecretKey: "CLICKHOUSE_PASSWORD"
-  nodeSelector:
-    if-llm-workload: "true"
-  tolerations:
-    - key: "if-monitoring-pod"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
-    - key: "if-llm-workload"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"  
+
   # Migration configuration
   migration:
     # -- Migration URL (TCP protocol) for clickhouse
