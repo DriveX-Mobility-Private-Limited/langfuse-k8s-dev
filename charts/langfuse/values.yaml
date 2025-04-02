@@ -744,3 +744,8 @@ global:
 # Additional manifests
 
 extraManifests: []
+extraEnvVars:
+    - name: CLICKHOUSE_ZOOKEEPER_SERVERS
+      value: "langfuse-zookeeper"
+    - name: CLICKHOUSE_ZOOKEEPER_SESSION_TIMEOUT_MS
+      value: "30000"
