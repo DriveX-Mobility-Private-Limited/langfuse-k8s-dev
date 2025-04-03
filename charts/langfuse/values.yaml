@@ -472,15 +472,15 @@ redis:
 
 # ClickHouse Configuration
 clickhouse:
-  extraEnvVars:
-    - name: CLICKHOUSE_ZOOKEEPER_SERVERS
-      value: "langfuse-zookeeper"
-    - name: CLICKHOUSE_ZOOKEEPER_PORT
-      value: "2181"
-    - name: CLICKHOUSE_ZOOKEEPER_SESSION_TIMEOUT_MS
-      value: "30000"
+  # extraEnvVars:
+  #   - name: CLICKHOUSE_ZOOKEEPER_SERVERS
+  #     value: "langfuse-zookeeper"
+  #   - name: CLICKHOUSE_ZOOKEEPER_PORT
+  #     value: "2181"
+  #   - name: CLICKHOUSE_ZOOKEEPER_SESSION_TIMEOUT_MS
+  #     value: "30000"
   # -- Enable ClickHouse deployment (via Bitnami Helm Chart). If you want to use an external Clickhouse server (or a managed one), set this to false
-  deploy: false
+  deploy: true
   persistence:
     size: 50Gi
   logPersistence:
@@ -514,7 +514,7 @@ clickhouse:
     autoMigrate: true
 
   # -- Whether to run ClickHouse commands ON CLUSTER
-  clusterEnabled: true
+  clusterEnabled: false
 
   # -- Subchart specific settings
   shards: 1 # Fixed - Langfuse does not support sharding
