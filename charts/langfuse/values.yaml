@@ -519,7 +519,7 @@ clickhouse:
   # -- Subchart specific settings
   shards: 1 # Fixed - Langfuse does not support sharding
   # -- Number of replicas to use for the ClickHouse cluster. 1 corresponds to a single, non-HA deployment.
-  replicaCount: 3
+  replicaCount: 1
   # -- The resources preset to use for the ClickHouse cluster.
   resourcesPreset: 2xlarge  
   nodeSelector:
