@@ -69,7 +69,7 @@ langfuse:
     className: "nginx"
     # -- The hosts for the ingress resource
     hosts:
-    - host: "lmmetrics.drivex.in"
+    - host: "llmmetrics.drivex.in"
       paths:
         - path: /
           pathType: ImplementationSpecific
