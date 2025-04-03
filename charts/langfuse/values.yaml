@@ -496,7 +496,7 @@ clickhouse:
   # Authentication configuration
   auth:
     # -- Username for the ClickHouse user.
-    username: default
+    username: clickhouse
     # -- Password for the ClickHouse user.
     password: ""
     # -- If you want to use an existing secret for the ClickHouse password, set the name of the secret here. (`clickhouse.auth.username` and `clickhouse.auth.password` will be ignored and picked up from this secret).
