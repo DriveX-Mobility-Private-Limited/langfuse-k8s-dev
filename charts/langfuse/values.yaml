@@ -480,7 +480,7 @@ clickhouse:
     - name: CLICKHOUSE_ZOOKEEPER_SESSION_TIMEOUT_MS
       value: "30000"
   # -- Enable ClickHouse deployment (via Bitnami Helm Chart). If you want to use an external Clickhouse server (or a managed one), set this to false
-  deploy: true
+  deploy: false
   persistence:
     size: 50Gi
   logPersistence:
