@@ -160,27 +160,6 @@ langfuse:
 
   # Web deployment configuration
   web:
-    additionalEnv:
-      - name: SMTP_HOST
-        value: "smtp.gmail.com"
-      - name: SMTP_PORT
-        value: "587"
-      - name: SMTP_SECURE
-        value: "false"
-      - name: SMTP_AUTH_USER
-        valueFrom:
-          secretKeyRef:
-            name: "langfuse-secrets-prod"
-            key: "SMTP_USER"
-      - name: SMTP_AUTH_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: "langfuse-secrets-prod"
-            key: "SMTP_PASSWORD"
-      - name: EMAIL_FROM_ADDRESS
-        value: "langfuse@partner.drivex.in"
-      - name: EMAIL_FROM_NAME
-        value: "Langfuse Notifications"  
     image:
       # -- The image repository to use for the langfuse web pods.
       repository: langfuse/langfuse
@@ -308,27 +287,6 @@ langfuse:
       effect: "NoSchedule"
   # Worker deployment configuration
   worker:
-    extraEnv:
-      - name: SMTP_HOST
-        value: "smtp.gmail.com"
-      - name: SMTP_PORT
-        value: "587"
-      - name: SMTP_SECURE
-        value: "false"
-      - name: SMTP_AUTH_USER
-        valueFrom:
-          secretKeyRef:
-            name: "langfuse-secrets-prod"
-            key: "SMTP_USER"
-      - name: SMTP_AUTH_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: "langfuse-secrets-prod"
-            key: "SMTP_PASSWORD"
-      - name: EMAIL_FROM_ADDRESS
-        value: "langfuse@partner.drivex.in"
-      - name: EMAIL_FROM_NAME
-        value: "Langfuse Notifications"  
     image:
       # -- The image repository to use for the langfuse worker pods
       repository: langfuse/langfuse-worker
@@ -814,8 +772,8 @@ global:
 # Additional manifests
 
 extraManifests: []
-extraEnvVars:
-    - name: CLICKHOUSE_ZOOKEEPER_SERVERS
-      value: "langfuse-zookeeper"
-    - name: CLICKHOUSE_ZOOKEEPER_SESSION_TIMEOUT_MS
-      value: "30000"
+# extraEnvVars:
+#     - name: CLICKHOUSE_ZOOKEEPER_SERVERS
+#       value: "langfuse-zookeeper"
+#     - name: CLICKHOUSE_ZOOKEEPER_SESSION_TIMEOUT_MS
+#       value: "30000"
