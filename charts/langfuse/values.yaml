@@ -8,10 +8,6 @@ fullnameOverride: ""
 
 # Core Langfuse Configuration
 langfuse:
-  web:
-    extraEnv:
-      - name: TEST_ENV_VAR
-        value: "test123"
   # Logging configuration
   logging:
     # -- Set the log level for the application (trace, debug, info, warn, error, fatal)
@@ -143,7 +139,7 @@ langfuse:
 
   # Web deployment configuration
   web:
-    extraEnv:
+    additionalEnv:
       - name: SMTP_HOST
         value: "smtp.gmail.com"
       - name: SMTP_PORT
