@@ -109,7 +109,7 @@ langfuse:
   
   nodeSelector: {}
     # if-llm-workload: "true"
-  tolerations: {}
+  tolerations: []
     # - key: "if-monitoring-pod"
     #   operator: "Equal"
     #   value: "true"
@@ -276,7 +276,7 @@ langfuse:
       successThreshold: 1
     nodeSelector: {}
       # if-llm-workload: "true"  
-    tolerations: {}
+    tolerations: []
     # - key: "if-monitoring-pod"
     #   operator: "Equal"
     #   value: "true"
@@ -372,7 +372,7 @@ langfuse:
       successThreshold: 1
     nodeSelector: {}
       # if-llm-workload: "true"  
-    tolerations: {}
+    tolerations: []
     # - key: "if-monitoring-pod"
     #   operator: "Equal"
     #   value: "true"
@@ -402,7 +402,7 @@ postgresql:
       selector: {}
     nodeSelector: {}
       # if-llm-workload: "true"
-    tolerations: {}
+    tolerations: []
       # - key: "if-monitoring-pod"
       #   operator: "Equal"
       #   value: "true"
@@ -555,7 +555,7 @@ clickhouse:
   resourcesPreset: 2xlarge  
   nodeSelector: {}
     # if-llm-workload: "true"
-  tolerations: {}
+  tolerations: []
     # - key: "if-monitoring-pod"
     #   operator: "Equal"
     #   value: "true"
@@ -565,7 +565,7 @@ clickhouse:
     #   value: "true"
     #   effect: "NoSchedule"
   zookeeper:
-    tolerations: {}
+    tolerations: []
       # - key: "if-llm-workload"
       #   operator: "Equal"
       #   value: "true"
@@ -720,7 +720,7 @@ s3:
     rootPasswordSecretKey: ""
   nodeSelector: {}
     # if-llm-workload: "true"
-  tolerations: {}
+  tolerations: []
     # - key: "if-monitoring-pod"
     #   operator: "Equal"
     #   value: "true"
@@ -767,7 +767,7 @@ s3:
 zookeeper:
   nodeSelector: {}
     # if-llm-workload: "true"  
-  tolerations: {}
+  tolerations: []
     # - key: "if-monitoring-pod"
     #   operator: "Equal"
     #   value: "true"
