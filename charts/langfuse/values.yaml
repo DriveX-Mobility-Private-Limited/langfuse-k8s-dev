@@ -431,7 +431,7 @@ postgresql:
     # -- Password to use to connect to the postgres database deployed with Langfuse. In case `postgresql.deploy` is set to `true`, the password will be set automatically.
     password: ""
     # -- If you want to use an existing secret for the postgres password, set the name of the secret here. (`postgresql.auth.username` and `postgresql.auth.password` will be ignored and picked up from this secret).
-    existingSecret: "langfuse-postgres-credentials-prod"
+    existingSecret: "langfuse-postgres-credentials-dev"
     # -- The key in the existing secret that contains the password.
     secretKeys:
       postgresPasswordKey: "password"
