@@ -26,7 +26,7 @@ langfuse:
           name: "langfuse-secrets-dev"
           key: "SMTP_PASSWORD"
     - name: EMAIL_FROM_ADDRESS
-      value: "langfuse-upgrade@partner.drivex.dev"
+      value: "langfuseupgrade@partner.drivex.dev"
     - name: EMAIL_FROM_NAME
       value: "Langfuse Notifications"
   # Logging configuration
@@ -90,7 +90,7 @@ langfuse:
     className: "nginx"
     # -- The hosts for the ingress resource
     hosts:
-    - host: "langfuse-upgrade@partner.drivex.dev"
+    - host: "langfuse-upgrade.drivex.dev"
       paths:
         - path: /
           pathType: ImplementationSpecific
