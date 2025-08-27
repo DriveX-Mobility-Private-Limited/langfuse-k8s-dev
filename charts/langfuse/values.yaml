@@ -18,15 +18,15 @@ langfuse:
     - name: SMTP_AUTH_USER
       valueFrom:
         secretKeyRef:
-          name: "langfuse-secrets-prod"
+          name: "langfuse-secrets-dev"
           key: "SMTP_USER"
     - name: SMTP_AUTH_PASSWORD
       valueFrom:
         secretKeyRef:
-          name: "langfuse-secrets-prod"
+          name: "langfuse-secrets-dev"
           key: "SMTP_PASSWORD"
     - name: EMAIL_FROM_ADDRESS
-      value: "langfuse@partner.drivex.in"
+      value: "langfuse-upgrade@partner.drivex.dev"
     - name: EMAIL_FROM_NAME
       value: "Langfuse Notifications"
   # Logging configuration
@@ -39,7 +39,7 @@ langfuse:
   # -- Used to hash API keys. Can be configured by value or existing secret reference. To generate a new salt, run `openssl rand -base64 32`.
   salt:
     secretKeyRef:
-      name: "langfuse-secrets-prod"
+      name: "langfuse-secrets-dev"
       key: "SALT"
   
   # -- Langfuse EE license key.
@@ -52,7 +52,7 @@ langfuse:
   # -- Used to encrypt sensitive data. Must be 256 bits (64 string characters in hex format). Generate via `openssl rand -hex 32`.
   encryptionKey:
     secretKeyRef:
-      name: "langfuse-secrets-prod"
+      name: "langfuse-secrets-dev"
       key: "ENCRYPTION_KEY"
 
   # Feature flags
@@ -84,13 +84,13 @@ langfuse:
     annotations:
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
-      cert-manager.io/cluster-issuer: letsencrypt-prod
+      cert-manager.io/cluster-issuer: letsencrypt-dev
       nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
     # -- The class name for the ingress resource
     className: "nginx"
     # -- The hosts for the ingress resource
     hosts:
-    - host: "llmmetrics.drivex.in"
+    - host: "langfuse-upgrade@partner.drivex.dev"
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -99,7 +99,7 @@ langfuse:
       # -- Set to `true` to enable use HTTPS on the ingress
       enabled:  true
       # -- The name of the secret to use for TLS Key
-      secretName: "langfuse-prod-tls"
+      secretName: "langfuse-dev-tls"
 
   # -- Pod security context for all langfuse deployments
   podSecurityContext: {}
@@ -107,17 +107,17 @@ langfuse:
   securityContext: {}
   # -- Node selector for all langfuse deployments
   
-  nodeSelector:
-    if-llm-workload: "true"
-  tolerations:
-    - key: "if-monitoring-pod"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
-    - key: "if-llm-workload"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
+  nodeSelector: {}
+    # if-llm-workload: "true"
+  tolerations: {}
+    # - key: "if-monitoring-pod"
+    #   operator: "Equal"
+    #   value: "true"
+    #   effect: "NoSchedule"
+    # - key: "if-llm-workload"
+    #   operator: "Equal"
+    #   value: "true"
+    #   effect: "NoSchedule"
   affinity: {}
   pod:
     # -- Annotations for all langfuse pods
@@ -274,17 +274,17 @@ langfuse:
       failureThreshold: 3
       # -- Success threshold for readinessProbe.
       successThreshold: 1
-    nodeSelector:
-      if-llm-workload: "true"  
-    tolerations:
-    - key: "if-monitoring-pod"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
-    - key: "if-llm-workload"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
+    nodeSelector: {}
+      # if-llm-workload: "true"  
+    tolerations: {}
+    # - key: "if-monitoring-pod"
+    #   operator: "Equal"
+    #   value: "true"
+    #   effect: "NoSchedule"
+    # - key: "if-llm-workload"
+    #   operator: "Equal"
+    #   value: "true"
+    #   effect: "NoSchedule"
   # Worker deployment configuration
   worker:
     image:
@@ -370,17 +370,17 @@ langfuse:
       failureThreshold: 3
       # -- Success threshold for livenessProbe.
       successThreshold: 1
-    nodeSelector:
-      if-llm-workload: "true"  
-    tolerations:
-    - key: "if-monitoring-pod"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
-    - key: "if-llm-workload"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
+    nodeSelector: {}
+      # if-llm-workload: "true"  
+    tolerations: {}
+    # - key: "if-monitoring-pod"
+    #   operator: "Equal"
+    #   value: "true"
+    #   effect: "NoSchedule"
+    # - key: "if-llm-workload"
+    #   operator: "Equal"
+    #   value: "true"
+    #   effect: "NoSchedule"
   # NextAuth configuration
   nextauth:
     # -- When deploying to production, set the `nextauth.url` value to the canonical URL of your site.
@@ -400,17 +400,17 @@ postgresql:
       enabled: true
       size: 50Gi
       selector: {}
-    nodeSelector:
-      if-llm-workload: "true"
-    tolerations:
-      - key: "if-monitoring-pod"
-        operator: "Equal"
-        value: "true"
-        effect: "NoSchedule"
-      - key: "if-llm-workload"
-        operator: "Equal"
-        value: "true"
-        effect: "NoSchedule"       
+    nodeSelector: {}
+      # if-llm-workload: "true"
+    tolerations: {}
+      # - key: "if-monitoring-pod"
+      #   operator: "Equal"
+      #   value: "true"
+      #   effect: "NoSchedule"
+      # - key: "if-llm-workload"
+      #   operator: "Equal"
+      #   value: "true"
+      #   effect: "NoSchedule"       
   # -- PostgreSQL host to connect to. If postgresql.deploy is true, this will be set automatically based on the release name.
   host: ""
   # -- Port of the postgres server to use. Defaults to 5432.
@@ -543,29 +543,29 @@ clickhouse:
   replicaCount: 1
   # -- The resources preset to use for the ClickHouse cluster.
   resourcesPreset: 2xlarge  
-  nodeSelector:
-    if-llm-workload: "true"
-  tolerations:
-    - key: "if-monitoring-pod"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
-    - key: "if-llm-workload"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
+  nodeSelector: {}
+    # if-llm-workload: "true"
+  tolerations: {}
+    # - key: "if-monitoring-pod"
+    #   operator: "Equal"
+    #   value: "true"
+    #   effect: "NoSchedule"
+    # - key: "if-llm-workload"
+    #   operator: "Equal"
+    #   value: "true"
+    #   effect: "NoSchedule"
   zookeeper:
-    tolerations:
-      - key: "if-llm-workload"
-        operator: "Equal"
-        value: "true"
-        effect: "NoSchedule"
-      - key: "if-monitoring-pod"
-        operator: "Equal"
-        value: "true"
-        effect: "NoSchedule"        
-    nodeSelector:
-      if-llm-workload: "true"      
+    tolerations: {}
+      # - key: "if-llm-workload"
+      #   operator: "Equal"
+      #   value: "true"
+      #   effect: "NoSchedule"
+      # - key: "if-monitoring-pod"
+      #   operator: "Equal"
+      #   value: "true"
+      #   effect: "NoSchedule"        
+    nodeSelector: {}
+      # if-llm-workload: "true"      
 # S3/MinIO Configuration
 s3:
   # -- Enable MinIO deployment (via Bitnami Helm Chart). If you want to use a custom BlobStorage, e.g. S3, set to false.
@@ -573,7 +573,7 @@ s3:
   persistence:
     size: 50Gi
   # -- S3 bucket to use for all uploads. Can be overridden per upload type.
-  bucket: "langfuse-production"
+  bucket: "langfuse-dev"
   # -- S3 region to use for all uploads. Can be overridden per upload type.
   region: "ap-south-2"
   # -- S3 endpoint to use for all uploads. Can be overridden per upload type.
@@ -581,11 +581,11 @@ s3:
   forcePathStyle: false
   accessKeyId:
     secretKeyRef:
-      name: "langfuse-secrets-prod"
+      name: "langfuse-secrets-dev"
       key: "S3_ACCESS_KEY_ID"
   secretAccessKey:
     secretKeyRef:
-      name: "langfuse-secrets-prod"
+      name: "langfuse-secrets-dev"
       key: "S3_SECRET_ACCESS_KEY"
   eventUpload:
     prefix: "events/"
@@ -599,12 +599,12 @@ s3:
   # -- S3 accessKeyId to use for all uploads. Can be overridden per upload type.
   accessKeyId:
     secretKeyRef:
-      name: "langfuse-secrets-prod"
+      name: "langfuse-secrets-dev"
       key: "S3_ACCESS_KEY_ID"
   # -- S3 secretAccessKey to use for all uploads. Can be overridden per upload type.
   secretAccessKey:
     secretKeyRef:
-      name: "langfuse-secrets-prod"
+      name: "langfuse-secrets-dev"
       key: "S3_SECRET_ACCESS_KEY"
 
   # S3 Concurrency Configuration
@@ -708,17 +708,17 @@ s3:
     existingSecret: ""
     # -- Key where the Minio root user password is being stored inside the existing secret `s3.auth.existingSecret`
     rootPasswordSecretKey: ""
-  nodeSelector:
-    if-llm-workload: "true"
-  tolerations:
-    - key: "if-monitoring-pod"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
-    - key: "if-llm-workload"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
+  nodeSelector: {}
+    # if-llm-workload: "true"
+  tolerations: {}
+    # - key: "if-monitoring-pod"
+    #   operator: "Equal"
+    #   value: "true"
+    #   effect: "NoSchedule"
+    # - key: "if-llm-workload"
+    #   operator: "Equal"
+    #   value: "true"
+    #   effect: "NoSchedule"
 # env:
 #   # S3 credentials - these will be populated from the secret
 #   LANGFUSE_S3_ACCESS_KEY_ID:
@@ -755,17 +755,17 @@ s3:
 #         name: langfuse-secrets-prod
 #         key: secret-access-key
 zookeeper:
-  nodeSelector:
-    if-llm-workload: "true"  
-  tolerations:
-    - key: "if-monitoring-pod"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"
-    - key: "if-llm-workload"
-      operator: "Equal"
-      value: "true"
-      effect: "NoSchedule"   
+  nodeSelector: {}
+    # if-llm-workload: "true"  
+  tolerations: {}
+    # - key: "if-monitoring-pod"
+    #   operator: "Equal"
+    #   value: "true"
+    #   effect: "NoSchedule"
+    # - key: "if-llm-workload"
+    #   operator: "Equal"
+    #   value: "true"
+    #   effect: "NoSchedule"   
 # Langfuse Production Configuration
 global:
   storageClass: "gp2"
