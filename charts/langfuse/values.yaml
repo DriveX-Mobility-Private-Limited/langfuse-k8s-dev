@@ -388,7 +388,7 @@ langfuse:
     # -- Used to encrypt the NextAuth.js JWT, and to hash email verification tokens. Can be configured by value or existing secret reference.
     secret:
       secretKeyRef:
-        name: "langfuse-secrets-prod"
+        name: "langfuse-secrets-dev"
         key: "NEXTAUTH_SECRET"
 
 # PostgreSQL Configuration
@@ -478,7 +478,7 @@ redis:
     # -- Configure the password by value or existing secret reference
     password: ""
     # -- If you want to use an existing secret for the redis password, set the name of the secret here. (`redis.auth.password` will be ignored and picked up from this secret).
-    existingSecret: "langfuse-secrets-prod"
+    existingSecret: "langfuse-secrets-dev"
     # -- The key in the existing secret that contains the password.
     existingSecretPasswordKey: "REDIS_PASSWORD"
 
@@ -521,7 +521,7 @@ clickhouse:
     # -- Password for the ClickHouse user.
     password: ""
     # -- If you want to use an existing secret for the ClickHouse password, set the name of the secret here. (`clickhouse.auth.username` and `clickhouse.auth.password` will be ignored and picked up from this secret).
-    existingSecret: "langfuse-secrets-prod"
+    existingSecret: "langfuse-secrets-dev"
     # -- The key in the existing secret that contains the password.
     existingSecretKey: "CLICKHOUSE_PASSWORD"
 
